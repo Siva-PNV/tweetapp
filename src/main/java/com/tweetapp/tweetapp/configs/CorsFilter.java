@@ -26,7 +26,7 @@ public class CorsFilter implements Filter {
         // TODO Auto-generated method stub
         final HttpServletResponse response = (HttpServletResponse) res;
 
-        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
         response.setHeader("Access-Control-Allow-Methods", "POST, PUT, GET, OPTIONS, DELETE,OPTIONS");
         response.setHeader("Access-Control-Allow-Headers", "Authorization, Content-Type,x-requested-with");
         response.setHeader("Access-Control-Max-Age", "3600");
