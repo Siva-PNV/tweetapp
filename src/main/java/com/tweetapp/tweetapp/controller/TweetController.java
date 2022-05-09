@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins="http://localhost:4200")
 @RestController
-@RequestMapping("/api/v1.0/")
+@RequestMapping("/api/v1.0/tweets")
 public class TweetController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class TweetController {
 
     private final Logger log = LoggerFactory.getLogger(TweetController.class);
     // Method to post a new tweet
-    @PostMapping("tweets/{userName}/add")
+    @PostMapping("/{userName}/add")
     public ResponseEntity<?> postNewTweet(@PathVariable String userName, @RequestBody Tweets newTweet) {
 
         return new ResponseEntity<>(tweetService.postNewTweet(userName, newTweet),HttpStatus.CREATED);
@@ -40,7 +40,7 @@ public class TweetController {
     }
 
     // Method to retrieve all tweets
-    @GetMapping(value = "/tweets/all")
+    @GetMapping(value = "/all")
     public ResponseEntity<?> getAllTweets() {
 
         try {
@@ -52,7 +52,7 @@ public class TweetController {
     }
 
     // Method to get a user's tweets
-    @GetMapping(value = "/tweets/{userName}")
+    @GetMapping(value = "/{userName}")
     public ResponseEntity<?> getUserTweets(@PathVariable String userName, @RequestHeader (value = "loggedInUser") String loggedInUser ) {
         try {
             return new ResponseEntity<>(tweetService.getUserTweets(userName,loggedInUser), HttpStatus.OK);
@@ -65,7 +65,7 @@ public class TweetController {
         }
     }
 
-    @GetMapping(value = "/tweets/{userName}/{tweetId}")
+    @GetMapping(value = "/{userName}/{tweetId}")
     public ResponseEntity<?> getTweetDetails(@PathVariable String userName, @PathVariable String tweetId){
         try {
             return new ResponseEntity<>(tweetService.getTweet(tweetId, userName), HttpStatus.OK);
@@ -75,7 +75,7 @@ public class TweetController {
         }
     }
 
-    @PutMapping(value = "/tweets/{userName}/update")
+    @PutMapping(value = "/{userName}/update")
     public ResponseEntity<?> updateTweet(@PathVariable String userName, @RequestBody TweetUpdate tweetUpdate) {
         try {
             return new ResponseEntity<>(tweetService.updateTweet(userName, tweetUpdate.getTweetId(), tweetUpdate.getTweetText()), HttpStatus.OK);
@@ -88,7 +88,7 @@ public class TweetController {
         }
     }
 
-    @DeleteMapping(value = "/tweets/{userName}/delete/{tweetId}")
+    @DeleteMapping(value = "/{userName}/delete/{tweetId}")
     public ResponseEntity<?> deleteTweet( @PathVariable String userName,
                                           @PathVariable String tweetId) {
         try {
@@ -102,7 +102,7 @@ public class TweetController {
         }
     }
 
-    @PostMapping(value = "/tweets/{userName}/like/{tweetId}")
+    @PostMapping(value = "/{userName}/like/{tweetId}")
     public ResponseEntity<?> likeATweet(@PathVariable String userName, @PathVariable String tweetId){
         try {
             return new ResponseEntity<>(tweetService.likeTweet(userName, tweetId), HttpStatus.OK);
@@ -115,7 +115,7 @@ public class TweetController {
         }
     }
 
-    @PostMapping(value = "/tweets/{userName}/reply/{tweetId}")
+    @PostMapping(value = "/{userName}/reply/{tweetId}")
     public ResponseEntity<?> replyToTweet(@PathVariable String userName,
                                           @PathVariable String tweetId, @RequestBody Reply tweetReply) {
         try {

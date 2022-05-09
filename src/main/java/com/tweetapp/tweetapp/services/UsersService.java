@@ -30,6 +30,10 @@ public class UsersService {
         return  (tempUser!=null && tempUser.getLoginId().equals(tempLoginId) && tempUser.getPassword().equals(tempPassword));
     }
 
+    public Users getUser(LoginCredentials loginCredentials){
+        return usersRepository.findUserByUsernameAndPassword(loginCredentials.getLoginId(),loginCredentials.getPassword());
+    }
+
     public boolean forgotPassword(String userName, String newPassword){
        Users user= usersRepository.findByLoginId(userName);
        if(user !=null){
