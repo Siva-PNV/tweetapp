@@ -10,6 +10,8 @@ import io.micrometer.core.instrument.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -55,6 +57,10 @@ public class TweetsService {
 
         newTweet.setTweetId(UUID.randomUUID().toString());
         //logProducer.logNewPostEvents(newTweet);
+        LocalDateTime myDateObj = LocalDateTime.now();
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String formattedDate = myDateObj.format(myFormatObj);
+        newTweet.setTweetDate(formattedDate);
         return tweetRepository.insert(newTweet);
     }
 
@@ -78,9 +84,7 @@ public class TweetsService {
     //Method to update an existing tweet
     public Tweets updateTweet(String userId, String tweetId, String updatedTweetText) throws TweetDoesNotExistException {
 
-        Optional<Tweets> originalTweetOptional = tweetRepository.findById(tweetId);
-        System.out.println("===========>"+tweetId);
-        System.out.println("===========>"+updatedTweetText);
+        Optional<Tweets> originalTweetOptional = Optional.ofNullable(tweetRepository.findUserByUsernameAndTweetId(userId, tweetId));
         if(originalTweetOptional.isPresent()) {
             Tweets tweet = originalTweetOptional.get();
             tweet.setTweetText(updatedTweetText);
