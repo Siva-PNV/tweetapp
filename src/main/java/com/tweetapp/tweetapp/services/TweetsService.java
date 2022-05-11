@@ -41,7 +41,7 @@ public class TweetsService {
                         Integer commentsCount = tweet.getComments().size();
                         return new TweetResponse(tweet.getTweetId(), username, tweet.getTweetText(),
                                 tweet.getFirstName(), tweet.getLastName(), tweet.getTweetDate(),
-                                likesCount, commentsCount, likeStatus, tweet.getComments());
+                                likesCount, commentsCount, tweet.getComments());
                     })
                     .collect(Collectors.toList());
             return tweetResponse;
@@ -65,22 +65,6 @@ public class TweetsService {
         newTweet.setLastName(user.getLastName());
         newTweet.setUsername(username);
         return tweetRepository.insert(newTweet);
-    }
-
-    public TweetResponse getTweet(String tweetId,String username) throws TweetDoesNotExistException {
-        Optional<Tweets> tweetFounded =  tweetRepository.findById(tweetId);
-        if(tweetFounded.isPresent()) {
-            Tweets tweet = tweetFounded.get();
-            Integer likesCount = tweet.getLikes().size();
-            Boolean likeStatus = tweet.getLikes().contains(username);
-            Integer commentsCount = tweet.getComments().size();
-            return new TweetResponse(tweet.getTweetId(), tweet.getUsername(), tweet.getTweetText(),
-                    tweet.getFirstName(), tweet.getLastName(), tweet.getTweetDate(),
-                    likesCount, commentsCount, likeStatus, tweet.getComments());
-        }else {
-            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
-        }
-
     }
 
     public Tweets updateTweet(String userId, String tweetId, String updatedTweetText) throws TweetDoesNotExistException {
