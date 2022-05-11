@@ -63,6 +63,7 @@ public class TweetsService {
         System.out.println(user.getFirstName());
         newTweet.setFirstName(user.getFirstName());
         newTweet.setLastName(user.getLastName());
+        newTweet.setUsername(username);
         return tweetRepository.insert(newTweet);
     }
 

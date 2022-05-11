@@ -5,7 +5,9 @@ import com.tweetapp.tweetapp.exception.TweetDoesNotExistException;
 import com.tweetapp.tweetapp.model.Reply;
 import com.tweetapp.tweetapp.model.TweetUpdate;
 import com.tweetapp.tweetapp.model.Tweets;
+import com.tweetapp.tweetapp.model.Users;
 import com.tweetapp.tweetapp.services.TweetsService;
+import com.tweetapp.tweetapp.services.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(origins="http://localhost:4200")
 @RestController
 @RequestMapping("/api/v1.0/tweets")
 public class TweetController {
@@ -30,12 +31,18 @@ public class TweetController {
     @Autowired
     private TweetsService tweetService;
 
+    @Autowired
+    private UsersService usersService;
+
     private final Logger log = LoggerFactory.getLogger(TweetController.class);
     // Method to post a new tweet
     @PostMapping("/{userName}/add")
     public ResponseEntity<?> postNewTweet(@PathVariable String userName, @RequestBody Tweets newTweet) {
-
-        return new ResponseEntity<>(tweetService.postNewTweet(userName, newTweet),HttpStatus.CREATED);
+        Users user=usersService.getByUserName(userName);
+        if(user!=null){
+            return new ResponseEntity<>(tweetService.postNewTweet(userName, newTweet),HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>("User name not foud",HttpStatus.BAD_REQUEST);
 
     }
 
@@ -54,6 +61,11 @@ public class TweetController {
     // Method to get a user's tweets
     @GetMapping(value = "/{userName}")
     public ResponseEntity<?> getUserTweets(@PathVariable String userName, @RequestHeader (value = "loggedInUser") String loggedInUser ) {
+        Users user=usersService.getByUserName(userName);
+        if(user==null){
+            return new ResponseEntity<>("User name not found",
+                    HttpStatus.NOT_FOUND);
+        }
         try {
             return new ResponseEntity<>(tweetService.getUserTweets(userName,loggedInUser), HttpStatus.OK);
         } catch (InvalidUsernameException e) {
@@ -65,18 +77,13 @@ public class TweetController {
         }
     }
 
-    @GetMapping(value = "/{userName}/{tweetId}")
-    public ResponseEntity<?> getTweetDetails(@PathVariable String userName, @PathVariable String tweetId){
-        try {
-            return new ResponseEntity<>(tweetService.getTweet(tweetId, userName), HttpStatus.OK);
-        }  catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(),
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @PutMapping(value = "/{userName}/update")
     public ResponseEntity<?> updateTweet(@PathVariable String userName, @RequestBody TweetUpdate tweetUpdate) {
+        Users user=usersService.getByUserName(userName);
+        if(user==null){
+            return new ResponseEntity<>("User name not found",
+                    HttpStatus.NOT_FOUND);
+        }
         try {
             return new ResponseEntity<>(tweetService.updateTweet(userName, tweetUpdate.getTweetId(), tweetUpdate.getTweetText()), HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
@@ -91,6 +98,11 @@ public class TweetController {
     @DeleteMapping(value = "/{userName}/delete/{tweetId}")
     public ResponseEntity<?> deleteTweet( @PathVariable String userName,
                                           @PathVariable String tweetId) {
+        Users user=usersService.getByUserName(userName);
+        if(user==null){
+            return new ResponseEntity<>("User name not found",
+                    HttpStatus.NOT_FOUND);
+        }
         try {
             return new ResponseEntity<>(tweetService.deleteTweet(userName,tweetId), HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
@@ -104,6 +116,11 @@ public class TweetController {
 
     @PostMapping(value = "/{userName}/like/{tweetId}")
     public ResponseEntity<?> likeATweet(@PathVariable String userName, @PathVariable String tweetId){
+        Users user=usersService.getByUserName(userName);
+        if(user==null){
+            return new ResponseEntity<>("User name not found",
+                    HttpStatus.NOT_FOUND);
+        }
         try {
             return new ResponseEntity<>(tweetService.likeTweet(userName, tweetId), HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
@@ -118,6 +135,11 @@ public class TweetController {
     @PostMapping(value = "/{userName}/reply/{tweetId}")
     public ResponseEntity<?> replyToTweet(@PathVariable String userName,
                                           @PathVariable String tweetId, @RequestBody Reply tweetReply) {
+        Users user=usersService.getByUserName(userName);
+        if(user==null){
+            return new ResponseEntity<>("User name not found",
+                    HttpStatus.NOT_FOUND);
+        }
         try {
             return new ResponseEntity<>(tweetService.replyTweet(userName, tweetId, tweetReply.getComment()), HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
