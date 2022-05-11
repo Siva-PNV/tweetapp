@@ -60,10 +60,9 @@ public class TweetsService {
         String formattedDate = myDateObj.format(myFormatObj);
         newTweet.setTweetDate(formattedDate);
         Users user=usersRepository.findByLoginId(username);
-        if(user!=null){
-            newTweet.setFirstName(user.getFirstName());
-            newTweet.setLastName(user.getLastName());
-        }
+        System.out.println(user.getFirstName());
+        newTweet.setFirstName(user.getFirstName());
+        newTweet.setLastName(user.getLastName());
         return tweetRepository.insert(newTweet);
     }
 
