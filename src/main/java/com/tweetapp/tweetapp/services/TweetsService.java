@@ -32,19 +32,17 @@ public class TweetsService {
         return tweetRepository.findAll();
     }
 
-    public List<TweetResponse> getUserTweets(String username, String loggedInUser) throws InvalidUsernameException {
+    public List<TweetResponse> getUserTweets(String username) throws InvalidUsernameException {
         if(!StringUtils.isBlank(username)) {
             List<Tweets> tweets = tweetRepository.findByUsername(username);
-            List<TweetResponse> tweetResponse = tweets.stream().map(tweet ->{
+            return  tweets.stream().map(tweet ->{
                         Integer likesCount = tweet.getLikes().size();
-                        Boolean likeStatus = tweet.getLikes().contains(loggedInUser);
                         Integer commentsCount = tweet.getComments().size();
                         return new TweetResponse(tweet.getTweetId(), username, tweet.getTweetText(),
                                 tweet.getFirstName(), tweet.getLastName(), tweet.getTweetDate(),
                                 likesCount, commentsCount, tweet.getComments());
                     })
                     .collect(Collectors.toList());
-            return tweetResponse;
         } else {
             throw new InvalidUsernameException("Username/loginId provided is invalid");
         }
@@ -60,7 +58,6 @@ public class TweetsService {
         String formattedDate = myDateObj.format(myFormatObj);
         newTweet.setTweetDate(formattedDate);
         Users user=usersRepository.findByLoginId(username);
-        System.out.println(user.getFirstName());
         newTweet.setFirstName(user.getFirstName());
         newTweet.setLastName(user.getLastName());
         newTweet.setUsername(username);

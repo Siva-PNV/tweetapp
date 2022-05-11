@@ -1,6 +1,5 @@
 package com.tweetapp.tweetapp.services;
 
-import com.tweetapp.tweetapp.model.LoginCredentials;
 import com.tweetapp.tweetapp.model.Users;
 import com.tweetapp.tweetapp.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +22,13 @@ public class UsersService {
         return usersRepository.existsByLoginId(user.getLoginId());
     }
 
-    public boolean checkUser(LoginCredentials loginCredentials){
-        String tempLoginId = loginCredentials.getLoginId();
-        String tempPassword = loginCredentials.getPassword();
-        Users tempUser = usersRepository.findByLoginId(tempLoginId);
-        return  (tempUser!=null && tempUser.getLoginId().equals(tempLoginId) && tempUser.getPassword().equals(tempPassword));
+    public boolean checkUser(String userName,String password){
+        Users tempUser = usersRepository.findByLoginId(userName);
+        return  (tempUser!=null && tempUser.getLoginId().equals(userName) && tempUser.getPassword().equals(password));
     }
 
-    public Users getUser(LoginCredentials loginCredentials){
-        return usersRepository.findUserByUsernameAndPassword(loginCredentials.getLoginId(),loginCredentials.getPassword());
+    public Users getUser(String userName,String password){
+        return usersRepository.findUserByUsernameAndPassword(userName,password);
     }
 
     public boolean forgotPassword(String userName, String newPassword){
@@ -45,13 +42,11 @@ public class UsersService {
     }
 
     public List<Users> getAllUsers(){
-        List<Users> allUsers=usersRepository.findAll();
-        return allUsers;
+        return usersRepository.findAll();
     }
 
     public Users getByUserName(String userName){
-       Users user=usersRepository.findByLoginId(userName);
-        return user;
+        return usersRepository.findByLoginId(userName);
     }
 
 }

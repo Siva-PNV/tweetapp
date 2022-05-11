@@ -8,21 +8,19 @@ import com.tweetapp.tweetapp.model.Tweets;
 import com.tweetapp.tweetapp.model.Users;
 import com.tweetapp.tweetapp.services.TweetsService;
 import com.tweetapp.tweetapp.services.UsersService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequestMapping("/api/v1.0/tweets")
@@ -34,15 +32,16 @@ public class TweetController {
     @Autowired
     private UsersService usersService;
 
-    private final Logger log = LoggerFactory.getLogger(TweetController.class);
-    // Method to post a new tweet
     @PostMapping("/{userName}/add")
-    public ResponseEntity<?> postNewTweet(@PathVariable String userName, @RequestBody Tweets newTweet) {
+    public ResponseEntity<?> postNewTweet(@PathVariable String userName, @RequestBody Tweets newTweet, HttpServletRequest request) {
+        if(!checkAttribute(userName,request)){
+            return new ResponseEntity<>("Please login to add the tweet",HttpStatus.UNAUTHORIZED);
+        }
         Users user=usersService.getByUserName(userName);
         if(user!=null){
             return new ResponseEntity<>(tweetService.postNewTweet(userName, newTweet),HttpStatus.CREATED);
         }
-        return new ResponseEntity<>("User name not foud",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("User name not found",HttpStatus.BAD_REQUEST);
 
     }
 
@@ -60,14 +59,14 @@ public class TweetController {
 
     // Method to get a user's tweets
     @GetMapping(value = "/{userName}")
-    public ResponseEntity<?> getUserTweets(@PathVariable String userName, @RequestHeader (value = "loggedInUser") String loggedInUser ) {
+    public ResponseEntity<?> getUserTweets(@PathVariable String userName ) {
         Users user=usersService.getByUserName(userName);
         if(user==null){
             return new ResponseEntity<>("User name not found",
                     HttpStatus.NOT_FOUND);
         }
         try {
-            return new ResponseEntity<>(tweetService.getUserTweets(userName,loggedInUser), HttpStatus.OK);
+            return new ResponseEntity<>(tweetService.getUserTweets(userName), HttpStatus.OK);
         } catch (InvalidUsernameException e) {
             return new ResponseEntity<>("Invalid User param received",
                     HttpStatus.UNPROCESSABLE_ENTITY);
@@ -78,14 +77,17 @@ public class TweetController {
     }
 
     @PutMapping(value = "/{userName}/update")
-    public ResponseEntity<?> updateTweet(@PathVariable String userName, @RequestBody TweetUpdate tweetUpdate) {
+    public ResponseEntity<?> updateTweet(@PathVariable String userName, @RequestBody TweetUpdate tweetUpdate, HttpServletRequest request) {
+        if(!checkAttribute(userName,request)){
+            return new ResponseEntity<>("Please login to update the tweet",HttpStatus.UNAUTHORIZED);
+        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
             return new ResponseEntity<>("User name not found",
                     HttpStatus.NOT_FOUND);
         }
         try {
-            return new ResponseEntity<>(tweetService.updateTweet(userName, tweetUpdate.getTweetId(), tweetUpdate.getTweetText()), HttpStatus.OK);
+            return new ResponseEntity<>(tweetService.updateTweet(userName,tweetUpdate.getTweetId(), tweetUpdate.getTweetText()), HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
             return new ResponseEntity<>("Given tweetId cannot be found",
                     HttpStatus.NOT_FOUND);
@@ -97,7 +99,10 @@ public class TweetController {
 
     @DeleteMapping(value = "/{userName}/delete/{tweetId}")
     public ResponseEntity<?> deleteTweet( @PathVariable String userName,
-                                          @PathVariable String tweetId) {
+                                          @PathVariable String tweetId,HttpServletRequest request) {
+        if(!checkAttribute(userName,request)){
+            return new ResponseEntity<>("Please login to delete the tweet",HttpStatus.UNAUTHORIZED);
+        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
             return new ResponseEntity<>("User name not found",
@@ -115,7 +120,10 @@ public class TweetController {
     }
 
     @PostMapping(value = "/{userName}/like/{tweetId}")
-    public ResponseEntity<?> likeATweet(@PathVariable String userName, @PathVariable String tweetId){
+    public ResponseEntity<?> likeATweet(@PathVariable String userName, @PathVariable String tweetId,HttpServletRequest request){
+        if(request.getSession().getAttribute("userName")==null){
+            return new ResponseEntity<>("Please login to like for the tweet",HttpStatus.UNAUTHORIZED);
+        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
             return new ResponseEntity<>("User name not found",
@@ -134,7 +142,10 @@ public class TweetController {
 
     @PostMapping(value = "/{userName}/reply/{tweetId}")
     public ResponseEntity<?> replyToTweet(@PathVariable String userName,
-                                          @PathVariable String tweetId, @RequestBody Reply tweetReply) {
+                                          @PathVariable String tweetId, @RequestBody Reply tweetReply, HttpServletRequest request) {
+        if(request.getSession().getAttribute("userName")==null){
+            return new ResponseEntity<>("Please login to reply for the tweet",HttpStatus.UNAUTHORIZED);
+        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
             return new ResponseEntity<>("User name not found",
@@ -149,6 +160,10 @@ public class TweetController {
             return new ResponseEntity<>("Application has faced an issue",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public boolean checkAttribute(String userName, HttpServletRequest request){
+        return request.getSession().getAttribute("userName").equals(userName);
     }
 
 }

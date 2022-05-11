@@ -1,7 +1,8 @@
 package com.tweetapp.tweetapp.controller;
 
-import com.tweetapp.tweetapp.model.LoginCredentials;
+import com.tweetapp.tweetapp.exception.TweetDoesNotExistException;
 import com.tweetapp.tweetapp.model.Users;
+import com.tweetapp.tweetapp.services.TweetsService;
 import com.tweetapp.tweetapp.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RestController
 @RequestMapping("/api/v1.0/tweets")
 public class TweetAppApplicationController {
@@ -22,6 +25,8 @@ public class TweetAppApplicationController {
     @Autowired
     private UsersService usersService;
 
+    @Autowired
+    private TweetsService tweetsService;
     // @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -36,20 +41,19 @@ public class TweetAppApplicationController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String userName, @RequestParam String password) {
-        LoginCredentials loginCredentials=new LoginCredentials();
-        loginCredentials.setLoginId(userName);
-        loginCredentials.setPassword(password);
-        if(usersService.checkUser(loginCredentials)){
-            return new ResponseEntity<>(usersService.getUser(loginCredentials),HttpStatus.OK);
+    public ResponseEntity<?> loginUser(@RequestParam String userName, @RequestParam String password, HttpServletRequest request) {
+        if (usersService.checkUser(userName, password)) {
+            request.getSession().setAttribute("userName",userName);
+            return new ResponseEntity<>(usersService.getUser(userName, password), HttpStatus.OK);
         }
-        return new ResponseEntity<>("wrong",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/{username}/forgot")
     public ResponseEntity<String> forgotPassword(@PathVariable String username, @RequestBody String newPassword){
+
         if(usersService.forgotPassword(username,newPassword)){
-            return new ResponseEntity<>("success",HttpStatus.OK);
+            return new ResponseEntity<>("password changed",HttpStatus.OK);
         }
         return new ResponseEntity<>("user name not found",HttpStatus.BAD_REQUEST);
     }
@@ -67,4 +71,11 @@ public class TweetAppApplicationController {
         }
         return new ResponseEntity<>("User name not found", HttpStatus.BAD_REQUEST);
     }
+
+
+//    @GetMapping("/logout")
+//    public ResponseEntity<?> logout(HttpServletRequest request){
+//        request.getSession().
+//        return new ResponseEntity<>("logout", HttpStatus.OK);
+//    }
 }
