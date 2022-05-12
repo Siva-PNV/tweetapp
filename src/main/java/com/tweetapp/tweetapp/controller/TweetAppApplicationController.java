@@ -1,13 +1,10 @@
 package com.tweetapp.tweetapp.controller;
 
-import com.tweetapp.tweetapp.exception.TweetDoesNotExistException;
 import com.tweetapp.tweetapp.model.Users;
-import com.tweetapp.tweetapp.services.TweetsService;
 import com.tweetapp.tweetapp.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,18 +22,16 @@ public class TweetAppApplicationController {
     @Autowired
     private UsersService usersService;
 
-    @Autowired
-    private TweetsService tweetsService;
-    // @Autowired
-    private AuthenticationManager authenticationManager;
-
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@RequestBody Users userModel) {
+        if(!userModel.getLoginId().equals(userModel.getEmailId())){
+            return new ResponseEntity<>("Email Id and Login Id must be same.", HttpStatus.CREATED);
+        }
         if(!usersService.checkExistOrNot(userModel)){
 
             return new ResponseEntity<>(usersService.storeUserDetails(userModel), HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(userModel,
+        return new ResponseEntity<>("User name already exist, please login",
                 HttpStatus.OK);
     }
 
@@ -71,11 +66,4 @@ public class TweetAppApplicationController {
         }
         return new ResponseEntity<>("User name not found", HttpStatus.BAD_REQUEST);
     }
-
-
-//    @GetMapping("/logout")
-//    public ResponseEntity<?> logout(HttpServletRequest request){
-//        request.getSession().
-//        return new ResponseEntity<>("logout", HttpStatus.OK);
-//    }
 }
