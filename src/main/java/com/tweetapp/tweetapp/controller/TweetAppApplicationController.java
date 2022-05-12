@@ -25,14 +25,14 @@ public class TweetAppApplicationController {
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@RequestBody Users userModel) {
         if(!userModel.getLoginId().equals(userModel.getEmailId())){
-            return new ResponseEntity<>("Email Id and Login Id must be same.", HttpStatus.CREATED);
+            return new ResponseEntity<>("Email Id and Login Id must be same.", HttpStatus.BAD_REQUEST);
         }
         if(!usersService.checkExistOrNot(userModel)){
 
             return new ResponseEntity<>(usersService.storeUserDetails(userModel), HttpStatus.CREATED);
         }
         return new ResponseEntity<>("User name already exist, please login",
-                HttpStatus.OK);
+                HttpStatus.CONFLICT);
     }
 
     @GetMapping("/login")
@@ -50,7 +50,7 @@ public class TweetAppApplicationController {
         if(usersService.forgotPassword(username,newPassword)){
             return new ResponseEntity<>("password changed",HttpStatus.OK);
         }
-        return new ResponseEntity<>("user name not found",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("user name not found",HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/users/all")
@@ -64,6 +64,6 @@ public class TweetAppApplicationController {
         if(usersService.getByUserName(userName)!=null){
             return new ResponseEntity<>(usersService.getByUserName(userName), HttpStatus.OK);
         }
-        return new ResponseEntity<>("User name not found", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("User name not found", HttpStatus.NOT_FOUND);
     }
 }
