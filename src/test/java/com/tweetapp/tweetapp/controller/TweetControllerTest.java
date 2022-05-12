@@ -110,9 +110,9 @@ public class TweetControllerTest {
         String userName="praneeth@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
-                .perform(put("http://localhost:8080/api/v1.0/tweets/"+userName+"/update").sessionAttr("userName",userName)
+                .perform(put("http://localhost:8080/api/v1.0/tweets/"+userName+"/update/90798d7f-f4e6-4ace-b2ee").sessionAttr("userName",userName)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"tweetId\":\"90798d7f-f4e6-4ace-b2ee\",\"tweetText\":\"welcome\"}")
+                        .content("{\"tweetText\":\"welcome\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result1.getResponse().getContentAsString();
@@ -123,7 +123,6 @@ public class TweetControllerTest {
     @Test
     public void deleteTweetTest() throws Exception{
         String userName="praneeth@gmail.com";
-        when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
                 .perform(delete("http://localhost:8080/api/v1.0/tweets/"+userName+"/delete/c20b1bc8-02cc-4586-a55a-5adcd178c4f5")
                         .sessionAttr("userName",userName))
