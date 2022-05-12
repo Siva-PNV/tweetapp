@@ -5,10 +5,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 public interface UsersRepository extends MongoRepository<Users,String> {
     Users findByLoginId(String loginId);
     Boolean existsByLoginId(String loginId);
+
+    @Query("{loginId : ?0, password : ?1}")
+    Users findUserByUsernameAndPassword(String loginId, String password);
 }
