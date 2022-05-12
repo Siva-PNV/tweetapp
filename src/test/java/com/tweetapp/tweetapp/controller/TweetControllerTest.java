@@ -29,7 +29,7 @@ public class TweetControllerTest {
 
     @Test
     public void addTweetTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         MvcResult result1 = mockMvc
                 .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/add")
                         .sessionAttr("userName",userName)
@@ -44,7 +44,7 @@ public class TweetControllerTest {
 
     @Test
     public void addUserNotFoundTweetTest() throws Exception{
-        String userName="praneet@gmail.com";
+        String userName="siv@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
                 .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/add")
@@ -69,7 +69,7 @@ public class TweetControllerTest {
 
     @Test
     public void getUsersTweetsTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         MvcResult result1 = mockMvc
                 .perform(get("http://localhost:8080/api/v1.0/tweets/"+userName))
                 .andReturn();
@@ -79,7 +79,7 @@ public class TweetControllerTest {
 
     @Test
     public void getValidUsersTweetsTest() throws Exception{
-        String userName="praneet@gmail.com";
+        String userName="siv@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
                 .perform(get("http://localhost:8080/api/v1.0/tweets/"+userName))
@@ -91,10 +91,10 @@ public class TweetControllerTest {
 
     @Test
     public void updateTweetsTest() throws Exception{
-        String userName="praneet@gmail.com";
+        String userName="siv@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
-                .perform(put("http://localhost:8080/api/v1.0/tweets/"+userName+"/update/90798d7f-f4e6-4ace-b2ee-e5592eb8d8f5")
+                .perform(put("http://localhost:8080/api/v1.0/tweets/"+userName+"/update/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"tweetText\":\"welcome\"}")
@@ -107,7 +107,7 @@ public class TweetControllerTest {
 
     @Test
     public void updateTweetsIdNotFoundTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
                 .perform(put("http://localhost:8080/api/v1.0/tweets/"+userName+"/update/90798d7f-f4e6-4ace-b2ee").sessionAttr("userName",userName)
@@ -122,9 +122,9 @@ public class TweetControllerTest {
 
     @Test
     public void deleteTweetTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         MvcResult result1 = mockMvc
-                .perform(delete("http://localhost:8080/api/v1.0/tweets/"+userName+"/delete/c20b1bc8-02cc-4586-a55a-5adcd178c4f5")
+                .perform(delete("http://localhost:8080/api/v1.0/tweets/"+userName+"/delete/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName))
                 .andReturn();
         String actual=result1.getResponse().getContentAsString();
@@ -134,7 +134,7 @@ public class TweetControllerTest {
 
     @Test
     public void deleteTweetNotFoundTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
                 .perform(delete("http://localhost:8080/api/v1.0/tweets/"+userName+"/delete/c20b1bc8-02cc-4586-a55a-5adcd178c4f5")
@@ -147,9 +147,9 @@ public class TweetControllerTest {
 
     @Test
     public void likeTweetTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         MvcResult result1 = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/like/90798d7f-f4e6-4ace-b2ee-e5592eb8d8f5")
+                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/like/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName))
                 .andReturn();
         String actual=result1.getResponse().getContentAsString();
@@ -159,10 +159,10 @@ public class TweetControllerTest {
 
     @Test
     public void userNameNotFoundTest() throws Exception{
-        String userName="praneet@gmail.com";
+        String userName="siv@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/like/90798d7f-f4e6-4ace-b2ee-e5592eb8d8f5")
+                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/like/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName))
                 .andReturn();
         String actual=result1.getResponse().getContentAsString();
@@ -172,7 +172,7 @@ public class TweetControllerTest {
 
     @Test
     public void likeTweetNotFoundTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
                 .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/like/c20b1bc8-02cc-4586-a55a")
@@ -185,9 +185,9 @@ public class TweetControllerTest {
 
     @Test
     public void replyTweetTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         MvcResult result1 = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/90798d7f-f4e6-4ace-b2ee-e5592eb8d8f5")
+                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"tweetText\":\"welcome\"}")
@@ -200,10 +200,10 @@ public class TweetControllerTest {
 
     @Test
     public void replyUserNameNotFoundTest() throws Exception{
-        String userName="praneet@gmail.com";
+        String userName="siv@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/90798d7f-f4e6-4ace-b2ee-e5592eb8d8f5")
+                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"tweetText\":\"welcome\"}")
@@ -216,7 +216,7 @@ public class TweetControllerTest {
 
     @Test
     public void replyTweetNotFoundTest() throws Exception{
-        String userName="praneeth@gmail.com";
+        String userName="siva@gmail.com";
         when(usersService.getByUserName(userName)).thenReturn(null);
         MvcResult result1 = mockMvc
                 .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/c20b1bc8-02cc-4586-a55a")
