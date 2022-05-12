@@ -39,13 +39,13 @@ public class TweetController {
         }
         Users user=usersService.getByUserName(userName);
         if(user!=null){
-            return new ResponseEntity<>(tweetService.postNewTweet(userName, newTweet),HttpStatus.CREATED);
+            tweetService.postNewTweet(userName, newTweet);
+            return new ResponseEntity<>("Tweet created",HttpStatus.CREATED);
         }
         return new ResponseEntity<>("User name not found",HttpStatus.BAD_REQUEST);
 
     }
 
-    // Method to retrieve all tweets
     @GetMapping(value = "/all")
     public ResponseEntity<?> getAllTweets() {
 
@@ -57,7 +57,6 @@ public class TweetController {
         }
     }
 
-    // Method to get a user's tweets
     @GetMapping(value = "/{userName}")
     public ResponseEntity<?> getUserTweets(@PathVariable String userName ) {
         Users user=usersService.getByUserName(userName);
