@@ -18,6 +18,10 @@ public class UsersService {
         return user;
     }
 
+    public boolean checkEmailAndLoginId(Users user){
+        return user.getEmailId().equals(user.getLoginId());
+    }
+
     public boolean checkExistOrNot(Users user){
         return usersRepository.existsByLoginId(user.getLoginId());
     }
