@@ -10,6 +10,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TweetUpdate {
-    String tweetId;
     String tweetText;
 }

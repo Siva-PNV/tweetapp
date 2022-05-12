@@ -60,7 +60,10 @@ public class TweetAppApplicationControllerTest {
         Users user=new Users("test-123","siva@gmail.com","siva@gmail.com","siva","siva","siva","9988776655");
         when(usersService.checkExistOrNot(user)).thenReturn(false);
         MvcResult result = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/register").contentType(MediaType.APPLICATION_JSON).content("{\"id\":\"test-123\",\"emailId\":\"siva@gmail.com\",\"loginId\":\"siva@gmail.com\",\"firstName\":\"siva\",\"lastName\":\"siva\",\"password\":\"siva\",\"contactNo\":\"9988776655\"}").accept(MediaType.APPLICATION_JSON))
+                .perform(post("http://localhost:8080/api/v1.0/tweets/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"test-123\",\"emailId\":\"siva@gmail.com\",\"loginId\":\"siva@gmail.com\",\"firstName\":\"siva\",\"lastName\":\"siva\",\"password\":\"siva\",\"contactNo\":\"9988776655\"}")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result.getResponse().getContentAsString();
         String expected="{\"id\":\"test-123\",\"emailId\":\"siva@gmail.com\",\"loginId\":\"siva@gmail.com\",\"firstName\":\"siva\",\"lastName\":\"siva\",\"password\":\"siva\",\"contactNo\":\"9988776655\"}";
@@ -73,7 +76,10 @@ public class TweetAppApplicationControllerTest {
         when(usersService.checkExistOrNot(user)).thenReturn(true);
         when(usersService.checkEmailAndLoginId(user)).thenReturn(true);
         MvcResult result = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/register").contentType(MediaType.APPLICATION_JSON).content("{\"id\":\"test-123\",\"emailId\":\"siva@gmail.com\",\"loginId\":\"siva@gmail.com\",\"firstName\":\"siva\",\"lastName\":\"siva\",\"password\":\"siva\",\"contactNo\":\"9988776655\"}").accept(MediaType.APPLICATION_JSON))
+                .perform(post("http://localhost:8080/api/v1.0/tweets/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"test-123\",\"emailId\":\"siva@gmail.com\",\"loginId\":\"siva@gmail.com\",\"firstName\":\"siva\",\"lastName\":\"siva\",\"password\":\"siva\",\"contactNo\":\"9988776655\"}")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result.getResponse().getContentAsString();
         String expected="User name already exist, please login";
@@ -86,7 +92,10 @@ public class TweetAppApplicationControllerTest {
         when(usersService.checkExistOrNot(user)).thenReturn(false);
         when(usersService.checkEmailAndLoginId(user)).thenReturn(false);
         MvcResult result = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/register").contentType(MediaType.APPLICATION_JSON).content("{\"id\":\"test-1234\",\"emailId\":\"kalyan@gmail.com\",\"loginId\":\"kalyani@gmail.com\",\"firstName\":\"siva\",\"lastName\":\"siva\",\"password\":\"siva\",\"contactNo\":\"9988776655\"}").accept(MediaType.APPLICATION_JSON))
+                .perform(post("http://localhost:8080/api/v1.0/tweets/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"id\":\"test-1234\",\"emailId\":\"kalyan@gmail.com\",\"loginId\":\"kalyani@gmail.com\",\"firstName\":\"siva\",\"lastName\":\"siva\",\"password\":\"siva\",\"contactNo\":\"9988776655\"}")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result.getResponse().getContentAsString();
         String expected="Email Id and Login Id must be same.";
@@ -98,7 +107,10 @@ public class TweetAppApplicationControllerTest {
         String userName="siva@gmail.com";
         when(usersService.forgotPassword(userName,"siva")).thenReturn(true);
         MvcResult result = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/forgot").contentType(MediaType.APPLICATION_JSON).content("{\"password\":\"siva\"}").accept(MediaType.APPLICATION_JSON))
+                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/forgot")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"password\":\"siva\"}")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result.getResponse().getContentAsString();
         String expected="password changed";
@@ -110,7 +122,10 @@ public class TweetAppApplicationControllerTest {
         String userName="siv@gmail.com";
         when(usersService.forgotPassword(userName,"siva")).thenReturn(true);
         MvcResult result = mockMvc
-                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/forgot").contentType(MediaType.APPLICATION_JSON).content("{\"password\":\"siva\"}").accept(MediaType.APPLICATION_JSON))
+                .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/forgot")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"password\":\"siva\"}")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result.getResponse().getContentAsString();
         String expected="user name not found";
