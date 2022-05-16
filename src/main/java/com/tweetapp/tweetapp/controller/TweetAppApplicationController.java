@@ -1,5 +1,6 @@
 package com.tweetapp.tweetapp.controller;
 
+import com.tweetapp.tweetapp.model.LoginCredentials;
 import com.tweetapp.tweetapp.model.Users;
 import com.tweetapp.tweetapp.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,19 +37,20 @@ public class TweetAppApplicationController {
                 HttpStatus.CONFLICT);
     }
 
-    @GetMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String userName, @RequestParam String password, HttpServletRequest request) {
-        if (usersService.checkUser(userName, password)) {
-            request.getSession().setAttribute("userName",userName);
-            return new ResponseEntity<>(usersService.getUser(userName, password), HttpStatus.OK);
+    @PostMapping("/login")
+    public ResponseEntity<?> loginUser(@RequestBody LoginCredentials user, HttpServletRequest request) {
+
+        if (usersService.checkUser(user.getUsername(), user.getPassword())) {
+            request.getSession().setAttribute("userName",user.getUsername());
+            return new ResponseEntity<>(usersService.getUser(user.getUsername(), user.getPassword()), HttpStatus.OK);
         }
         return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/{username}/forgot")
-    public ResponseEntity<String> forgotPassword(@PathVariable String username, @RequestBody String newPassword){
+    public ResponseEntity<String> forgotPassword(@PathVariable String username, @RequestBody Users user){
 
-        if(usersService.forgotPassword(username,newPassword)){
+        if(usersService.forgotPassword(username,user.getPassword())){
             return new ResponseEntity<>("password changed",HttpStatus.OK);
         }
         return new ResponseEntity<>("user name not found",HttpStatus.NOT_FOUND);
