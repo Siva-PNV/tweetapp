@@ -1,6 +1,8 @@
 package com.tweetapp.tweetapp.services;
 
+import com.tweetapp.tweetapp.model.UserModel;
 import com.tweetapp.tweetapp.model.Users;
+import com.tweetapp.tweetapp.repository.UserModelRepository;
 import com.tweetapp.tweetapp.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,9 @@ public class UsersService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private UserModelRepository userModelRepository;
 
     public Users storeUserDetails(Users user){
         usersRepository.save(user);
@@ -31,7 +36,7 @@ public class UsersService {
         return  (tempUser!=null && tempUser.getLoginId().equals(userName) && tempUser.getPassword().equals(password));
     }
 
-    public Users getUser(String userName,String password){
+    public UserModel getUser(String userName, String password){
         return usersRepository.findUserByUsernameAndPassword(userName,password);
     }
 
@@ -45,12 +50,17 @@ public class UsersService {
        return false;
     }
 
-    public List<Users> getAllUsers(){
-        return usersRepository.findAll();
+    public List<UserModel> getAllUsers(){
+        return userModelRepository.findAll();
     }
 
     public Users getByUserName(String userName){
         return usersRepository.findByLoginId(userName);
+    }
+
+
+    public UserModel getDetailsOfUser(String userName){
+        return userModelRepository.findByLoginId(userName);
     }
 
 }

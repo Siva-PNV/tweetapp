@@ -1,5 +1,6 @@
 package com.tweetapp.tweetapp.repository;
 
+import com.tweetapp.tweetapp.model.UserModel;
 import com.tweetapp.tweetapp.model.Users;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
@@ -11,5 +12,5 @@ public interface UsersRepository extends MongoRepository<Users,String> {
     Boolean existsByLoginId(String loginId);
 
     @Query("{loginId : ?0, password : ?1}")
-    Users findUserByUsernameAndPassword(String loginId, String password);
+    UserModel findUserByUsernameAndPassword(String loginId, String password);
 }

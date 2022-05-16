@@ -77,10 +77,9 @@ public class TweetsService {
 
     }
 
-    public boolean deleteTweet(String userName,String tweetId) throws TweetDoesNotExistException {
+    public void deleteTweet(String userName, String tweetId) throws TweetDoesNotExistException {
         if(tweetRepository.findByUsername(userName)!=null && tweetRepository.existsById(tweetId) && !StringUtils.isBlank(tweetId)) {
             tweetRepository.deleteById(tweetId);
-            return true;
         }else {
 
             throw new TweetDoesNotExistException("This tweet does not exist anymore.");
@@ -99,15 +98,40 @@ public class TweetsService {
         }
     }
 
-    public Tweets replyTweet(String username, String tweetId, String tweetReply) throws TweetDoesNotExistException {
+    public Tweets disLikeTweet(String username, String tweetId) throws TweetDoesNotExistException{
         Optional<Tweets> tweetOptional = tweetRepository.findById(tweetId);
         if(tweetOptional.isPresent()) {
             Tweets tweet = tweetOptional.get();
-            tweet.getComments().add(new Comment(username, tweetReply));
+            tweet.getLikes().remove(username);
             return tweetRepository.save(tweet);
         } else {
             throw new TweetDoesNotExistException("This tweet does not exist anymore.");
         }
+    }
+
+    public boolean checkLikedOrNot(String username, String tweetId) throws TweetDoesNotExistException {
+        Optional<Tweets> tweetOptional = tweetRepository.findById(tweetId);
+
+        if(!tweetOptional.isPresent()) {
+            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+        }
+        Tweets tweet = tweetOptional.get();
+        return tweet.getLikes().contains(username);
+    }
+
+    public void replyTweet(String username, String tweetId, String tweetReply) throws TweetDoesNotExistException {
+        Optional<Tweets> tweetOptional = tweetRepository.findById(tweetId);
+        if(tweetOptional.isPresent()) {
+            Tweets tweet = tweetOptional.get();
+            tweet.getComments().add(new Comment(username, tweetReply));
+            tweetRepository.save(tweet);
+        } else {
+            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+        }
+    }
+
+    public List<Tweets> findByTweetId(String tweetId){
+        return tweetRepository.findByTweetId(tweetId);
     }
 
 }

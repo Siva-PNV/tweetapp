@@ -11,6 +11,7 @@ import com.tweetapp.tweetapp.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/api/v1.0/tweets")
 public class TweetController {
@@ -109,8 +112,8 @@ public class TweetController {
         }
     }
 
-    @PostMapping( "/{userName}/like/{tweetId}")
-    public ResponseEntity<?> likeATweet(@PathVariable String userName, @PathVariable String tweetId,HttpServletRequest request){
+    @PutMapping( "/{userName}/like/{tweetId}")
+    public ResponseEntity<?> likeATweet(@PathVariable String userName, @PathVariable String tweetId,HttpServletRequest request) throws TweetDoesNotExistException {
         if(request.getSession().getAttribute("userName")==null){
             return new ResponseEntity<>("Please login to like for the tweet",HttpStatus.UNAUTHORIZED);
         }
@@ -120,8 +123,13 @@ public class TweetController {
                     HttpStatus.NOT_FOUND);
         }
         try {
-            tweetService.likeTweet(userName, tweetId);
-            return new ResponseEntity<>("liked tweet", HttpStatus.OK);
+            if(!tweetService.checkLikedOrNot(userName, tweetId)){
+                tweetService.likeTweet(userName, tweetId);
+                return new ResponseEntity<>("Liked tweet", HttpStatus.OK);
+            }else{
+                tweetService.disLikeTweet(userName, tweetId);
+                return new ResponseEntity<>("Disliked tweet", HttpStatus.OK);
+            }
         } catch (TweetDoesNotExistException e) {
             return new ResponseEntity<>("Given tweetId cannot be found",
                     HttpStatus.NOT_FOUND);
@@ -146,6 +154,15 @@ public class TweetController {
             return new ResponseEntity<>("Given tweetId cannot be found",
                     HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/getLike/{tweetId}")
+    public ResponseEntity<?> getLikes(@PathVariable String tweetId){
+        List<Tweets> tweet=tweetService.findByTweetId(tweetId);
+        if(tweet==null){
+            return new ResponseEntity<>("Tweet id not found",HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(tweetService.findByTweetId(tweetId),HttpStatus.OK);
     }
 
     public boolean checkAttribute(String userName, HttpServletRequest request){

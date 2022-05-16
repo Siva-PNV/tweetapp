@@ -190,7 +190,7 @@ public class TweetControllerTest {
                 .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"tweetText\":\"welcome\"}")
+                        .content("{\"comment\":\"welcome\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result1.getResponse().getContentAsString();
@@ -206,7 +206,7 @@ public class TweetControllerTest {
                 .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/a1331033-f4ac-496a-9092-79366d960750")
                         .sessionAttr("userName",userName)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"tweetText\":\"welcome\"}")
+                        .content("{\"comment\":\"welcome\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result1.getResponse().getContentAsString();
@@ -221,7 +221,7 @@ public class TweetControllerTest {
         MvcResult result1 = mockMvc
                 .perform(post("http://localhost:8080/api/v1.0/tweets/"+userName+"/reply/c20b1bc8-02cc-4586-a55a")
                         .sessionAttr("userName",userName)
-                        .contentType(MediaType.APPLICATION_JSON).content("{\"tweetText\":\"welcome\"}")
+                        .contentType(MediaType.APPLICATION_JSON).content("{\"comment\":\"welcome\"}")
                         .accept(MediaType.APPLICATION_JSON))
                 .andReturn();
         String actual=result1.getResponse().getContentAsString();
