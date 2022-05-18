@@ -24,6 +24,7 @@ public class Tweets {
     private String firstName;
     private String lastName;
     private String tweetDate;
+    private String imageUrl;
     private List<String> likes = new ArrayList<>();
     private List<Comment> comments = new ArrayList<>();
 

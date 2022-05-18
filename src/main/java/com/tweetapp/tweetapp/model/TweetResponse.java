@@ -24,5 +24,6 @@ public class TweetResponse implements Serializable{
     private String tweetDate;
     private Integer likesCount;
     private Integer commentsCount;
+    private String imageUrl;
     private List<Comment> comments = new ArrayList<>();
 }

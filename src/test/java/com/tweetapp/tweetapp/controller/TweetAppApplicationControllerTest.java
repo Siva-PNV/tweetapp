@@ -57,7 +57,7 @@ public class TweetAppApplicationControllerTest {
 
     @Test
     public void registerUserTest() throws Exception{
-        Users user=new Users("test-123","siva@gmail.com","siva@gmail.com","siva","siva","siva","9988776655");
+        Users user=new Users("test-123","siva@gmail.com","siva@gmail.com","siva","siva","siva","9988776655","");
         when(usersService.checkExistOrNot(user)).thenReturn(false);
         MvcResult result = mockMvc
                 .perform(post("http://localhost:8080/api/v1.0/tweets/register")
@@ -72,7 +72,7 @@ public class TweetAppApplicationControllerTest {
 
     @Test
     public void checkAlreadyRegisteredUserTest() throws Exception{
-        Users user=new Users("test-123","siva@gmail.com","siva@gmail.com","siva","siva","siva","9988776655");
+        Users user=new Users("test-123","siva@gmail.com","siva@gmail.com","siva","siva","siva","9988776655","");
         when(usersService.checkExistOrNot(user)).thenReturn(true);
         when(usersService.checkEmailAndLoginId(user)).thenReturn(true);
         MvcResult result = mockMvc
@@ -88,7 +88,7 @@ public class TweetAppApplicationControllerTest {
 
     @Test
     public void checkEmailAndLoginIdTest() throws Exception{
-        Users user=new Users("test-1234","kalyani@gmail.com","kalyan@gmail.com","siva","siva","siva","9988776655");
+        Users user=new Users("test-1234","kalyani@gmail.com","kalyan@gmail.com","siva","siva","siva","9988776655","");
         when(usersService.checkExistOrNot(user)).thenReturn(false);
         when(usersService.checkEmailAndLoginId(user)).thenReturn(false);
         MvcResult result = mockMvc
