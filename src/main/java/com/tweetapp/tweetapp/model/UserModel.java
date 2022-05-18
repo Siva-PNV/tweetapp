@@ -18,4 +18,5 @@ public class UserModel {
     private String firstName;
     private String lastName;
     private String contactNo;
+    private String imageUrl;
 }

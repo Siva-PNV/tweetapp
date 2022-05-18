@@ -21,5 +21,6 @@ public class Users {
     private String lastName;
     private String password;
     private String contactNo;
+    private String imageUrl;
 
 }

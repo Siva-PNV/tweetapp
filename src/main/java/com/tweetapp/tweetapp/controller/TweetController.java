@@ -114,9 +114,9 @@ public class TweetController {
 
     @PutMapping( "/{userName}/like/{tweetId}")
     public ResponseEntity<?> likeATweet(@PathVariable String userName, @PathVariable String tweetId,HttpServletRequest request) throws TweetDoesNotExistException {
-        if(request.getSession().getAttribute("userName")==null){
-            return new ResponseEntity<>("Please login to like for the tweet",HttpStatus.UNAUTHORIZED);
-        }
+//        if(request.getSession().getAttribute("userName")==null){
+//            return new ResponseEntity<>("Please login to like for the tweet",HttpStatus.UNAUTHORIZED);
+//        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
             return new ResponseEntity<>("User name not found",
@@ -125,13 +125,13 @@ public class TweetController {
         try {
             if(!tweetService.checkLikedOrNot(userName, tweetId)){
                 tweetService.likeTweet(userName, tweetId);
-                return new ResponseEntity<>("Liked tweet", HttpStatus.OK);
+                return new ResponseEntity<>("\" liked tweet \"", HttpStatus.OK);
             }else{
                 tweetService.disLikeTweet(userName, tweetId);
-                return new ResponseEntity<>("Disliked tweet", HttpStatus.OK);
+                return new ResponseEntity<>("\"Disliked tweet\"", HttpStatus.OK);
             }
         } catch (TweetDoesNotExistException e) {
-            return new ResponseEntity<>("Given tweetId cannot be found",
+            return new ResponseEntity<>("\"Given tweetId cannot be found\"",
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -139,9 +139,9 @@ public class TweetController {
     @PostMapping("/{userName}/reply/{tweetId}")
     public ResponseEntity<?> replyToTweet(@PathVariable String userName,
                                           @PathVariable String tweetId, @RequestBody Reply tweetReply, HttpServletRequest request) {
-        if(request.getSession().getAttribute("userName")==null){
-            return new ResponseEntity<>("Please login to reply for the tweet",HttpStatus.UNAUTHORIZED);
-        }
+//        if(request.getSession().getAttribute("userName")==null){
+//            return new ResponseEntity<>("Please login to reply for the tweet",HttpStatus.UNAUTHORIZED);
+//        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
             return new ResponseEntity<>("User name not found",
@@ -149,9 +149,9 @@ public class TweetController {
         }
         try {
             tweetService.replyTweet(userName, tweetId, tweetReply.getComment());
-            return new ResponseEntity<>("Replied", HttpStatus.OK);
+            return new ResponseEntity<>("\"Replied\"", HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
-            return new ResponseEntity<>("Given tweetId cannot be found",
+            return new ResponseEntity<>("\"Given tweetId cannot be found\"",
                     HttpStatus.NOT_FOUND);
         }
     }

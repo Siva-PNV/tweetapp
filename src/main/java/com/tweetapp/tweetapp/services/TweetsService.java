@@ -40,7 +40,7 @@ public class TweetsService {
                         Integer commentsCount = tweet.getComments().size();
                         return new TweetResponse(tweet.getTweetId(), username, tweet.getTweetText(),
                                 tweet.getFirstName(), tweet.getLastName(), tweet.getTweetDate(),
-                                likesCount, commentsCount, tweet.getComments());
+                                likesCount, commentsCount,tweet.getImageUrl(), tweet.getComments());
                     })
                     .collect(Collectors.toList());
         } else {
@@ -50,18 +50,19 @@ public class TweetsService {
     }
 
     //Method to post a new tweet
-    public Tweets postNewTweet(String username, Tweets newTweet) {
+    public void postNewTweet(String username, Tweets newTweet) {
 
         newTweet.setTweetId(UUID.randomUUID().toString());
         LocalDateTime myDateObj = LocalDateTime.now();
-        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm");
         String formattedDate = myDateObj.format(myFormatObj);
         newTweet.setTweetDate(formattedDate);
         Users user=usersRepository.findByLoginId(username);
         newTweet.setFirstName(user.getFirstName());
         newTweet.setLastName(user.getLastName());
         newTweet.setUsername(username);
-        return tweetRepository.insert(newTweet);
+        newTweet.setImageUrl(user.getImageUrl());
+        tweetRepository.insert(newTweet);
     }
 
     public Tweets updateTweet(String userId, String tweetId, String updatedTweetText) throws TweetDoesNotExistException {
@@ -87,23 +88,23 @@ public class TweetsService {
     }
 
 
-    public Tweets likeTweet(String username, String tweetId) throws TweetDoesNotExistException{
+    public void likeTweet(String username, String tweetId) throws TweetDoesNotExistException{
         Optional<Tweets> tweetOptional = tweetRepository.findById(tweetId);
         if(tweetOptional.isPresent()) {
             Tweets tweet = tweetOptional.get();
             tweet.getLikes().add(username);
-            return tweetRepository.save(tweet);
+            tweetRepository.save(tweet);
         } else {
             throw new TweetDoesNotExistException("This tweet does not exist anymore.");
         }
     }
 
-    public Tweets disLikeTweet(String username, String tweetId) throws TweetDoesNotExistException{
+    public void disLikeTweet(String username, String tweetId) throws TweetDoesNotExistException{
         Optional<Tweets> tweetOptional = tweetRepository.findById(tweetId);
         if(tweetOptional.isPresent()) {
             Tweets tweet = tweetOptional.get();
             tweet.getLikes().remove(username);
-            return tweetRepository.save(tweet);
+            tweetRepository.save(tweet);
         } else {
             throw new TweetDoesNotExistException("This tweet does not exist anymore.");
         }
@@ -121,9 +122,10 @@ public class TweetsService {
 
     public void replyTweet(String username, String tweetId, String tweetReply) throws TweetDoesNotExistException {
         Optional<Tweets> tweetOptional = tweetRepository.findById(tweetId);
+        Users user=usersRepository.findByLoginId(username);
         if(tweetOptional.isPresent()) {
             Tweets tweet = tweetOptional.get();
-            tweet.getComments().add(new Comment(username, tweetReply));
+            tweet.getComments().add(new Comment(username, tweetReply,user.getImageUrl()));
             tweetRepository.save(tweet);
         } else {
             throw new TweetDoesNotExistException("This tweet does not exist anymore.");

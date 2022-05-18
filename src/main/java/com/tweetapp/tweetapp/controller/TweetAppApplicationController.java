@@ -1,10 +1,14 @@
 package com.tweetapp.tweetapp.controller;
 
+import com.tweetapp.tweetapp.model.LoadFileVO;
 import com.tweetapp.tweetapp.model.LoginCredentials;
 import com.tweetapp.tweetapp.model.Users;
 import com.tweetapp.tweetapp.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,9 +16,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -69,4 +76,21 @@ public class TweetAppApplicationController {
         }
         return new ResponseEntity<>("User name not found", HttpStatus.NOT_FOUND);
     }
+
+    @PostMapping("/avatar")
+    public ResponseEntity<?> addAvatarFile(@RequestParam String username, @RequestParam("file") MultipartFile file ) throws IOException {
+
+        return new ResponseEntity<>(usersService.addFile(username,file), HttpStatus.CREATED);
+    }
+    @GetMapping("avatar/{id}")
+    public ResponseEntity<ByteArrayResource> getHostFile(@PathVariable String id) throws IOException {
+
+        LoadFileVO loadFile = usersService.getHostFile(id);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(loadFile.getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + loadFile.getFilename() + "\"")
+                .body(new ByteArrayResource(loadFile.getFile()));
+
+    }
+
 }
