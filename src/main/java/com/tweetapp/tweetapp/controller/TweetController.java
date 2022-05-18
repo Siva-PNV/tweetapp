@@ -41,14 +41,14 @@ public class TweetController {
         if(user==null){
             return new ResponseEntity<>("User name not found",HttpStatus.BAD_REQUEST);
         }
-        if(request.getSession().getAttribute("userName")==null){
-            return new ResponseEntity<>("Please login to add the tweet",HttpStatus.UNAUTHORIZED);
-        }
-        if(!checkAttribute(userName,request)){
-            return new ResponseEntity<>("You don`t have access to add the tweet",HttpStatus.UNAUTHORIZED);
-        }
+//        if(request.getSession().getAttribute("userName")==null){
+//            return new ResponseEntity<>("Please login to add the tweet",HttpStatus.UNAUTHORIZED);
+//        }
+//        if(!checkAttribute(userName,request)){
+//            return new ResponseEntity<>("\"You don`t have access to add the tweet\"",HttpStatus.UNAUTHORIZED);
+//        }
         tweetService.postNewTweet(userName, newTweet);
-        return new ResponseEntity<>("Tweet created",HttpStatus.CREATED);
+        return new ResponseEntity<>("\"Tweet created\"",HttpStatus.CREATED);
     }
 
     @GetMapping( "/all")
