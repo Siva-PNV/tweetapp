@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,13 +33,13 @@ public class TweetAppApplicationController {
     private UsersService usersService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerNewUser(@RequestBody Users userModel) {
-        if(!usersService.checkEmailAndLoginId(userModel)){
+    public ResponseEntity<?> registerNewUser(@RequestBody Users users) {
+        if(!usersService.checkEmailAndLoginId(users)){
             return new ResponseEntity<>("Email Id and Login Id must be same.", HttpStatus.BAD_REQUEST);
         }
-        if(!usersService.checkExistOrNot(userModel)){
+        if(!usersService.checkExistOrNot(users)){
 
-            return new ResponseEntity<>(usersService.storeUserDetails(userModel), HttpStatus.CREATED);
+            return new ResponseEntity<>(usersService.storeUserDetails(users), HttpStatus.CREATED);
         }
         return new ResponseEntity<>("User name already exist, please login",
                 HttpStatus.CONFLICT);
@@ -55,9 +56,9 @@ public class TweetAppApplicationController {
     }
 
     @PostMapping("/{username}/forgot")
-    public ResponseEntity<String> forgotPassword(@PathVariable String username, @RequestBody Users user){
+    public ResponseEntity<String> forgotPassword(@PathVariable String username, @RequestBody Users users){
 
-        if(usersService.forgotPassword(username,user.getPassword())){
+        if(usersService.forgotPassword(username,users.getPassword())){
             return new ResponseEntity<>("password changed",HttpStatus.OK);
         }
         return new ResponseEntity<>("user name not found",HttpStatus.NOT_FOUND);
@@ -74,13 +75,13 @@ public class TweetAppApplicationController {
         if(usersService.getByUserName(userName)!=null){
             return new ResponseEntity<>(usersService.getDetailsOfUser(userName), HttpStatus.OK);
         }
-        return new ResponseEntity<>("User name not found", HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("User name not found", HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/avatar")
+    @PutMapping("/avatar")
     public ResponseEntity<?> addAvatarFile(@RequestParam String username, @RequestParam("file") MultipartFile file ) throws IOException {
-
-        return new ResponseEntity<>(usersService.addFile(username,file), HttpStatus.CREATED);
+        usersService.addFile(username,file);
+        return new ResponseEntity<>("\"Profile uploaded\"", HttpStatus.CREATED);
     }
     @GetMapping("avatar/{id}")
     public ResponseEntity<ByteArrayResource> getHostFile(@PathVariable String id) throws IOException {

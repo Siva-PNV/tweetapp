@@ -30,7 +30,7 @@ public class TweetAppApplicationControllerTest {
     MockMvc mockMvc;
 
     @Test
-    public void loginUserTest() throws Exception{
+    void loginUserTest() throws Exception{
        String userName="praneeth@gmail.com";
        String password="praneeth";
        when(usersService.checkUser(userName,password)).thenReturn(true);
@@ -43,7 +43,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void InvalidLoginUserTest() throws Exception{
+    void InvalidLoginUserTest() throws Exception{
         String userName="praneeth@gmail.com";
         String password="invalid";
         when(usersService.checkUser(userName,password)).thenReturn(false);
@@ -56,7 +56,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void registerUserTest() throws Exception{
+    void registerUserTest() throws Exception{
         Users user=new Users("test-123","siva@gmail.com","siva@gmail.com","siva","siva","siva","9988776655","");
         when(usersService.checkExistOrNot(user)).thenReturn(false);
         MvcResult result = mockMvc
@@ -71,7 +71,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void checkAlreadyRegisteredUserTest() throws Exception{
+    void checkAlreadyRegisteredUserTest() throws Exception{
         Users user=new Users("test-123","siva@gmail.com","siva@gmail.com","siva","siva","siva","9988776655","");
         when(usersService.checkExistOrNot(user)).thenReturn(true);
         when(usersService.checkEmailAndLoginId(user)).thenReturn(true);
@@ -87,7 +87,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void checkEmailAndLoginIdTest() throws Exception{
+    void checkEmailAndLoginIdTest() throws Exception{
         Users user=new Users("test-1234","kalyani@gmail.com","kalyan@gmail.com","siva","siva","siva","9988776655","");
         when(usersService.checkExistOrNot(user)).thenReturn(false);
         when(usersService.checkEmailAndLoginId(user)).thenReturn(false);
@@ -103,7 +103,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void resetPasswordTest() throws Exception{
+    void resetPasswordTest() throws Exception{
         String userName="siva@gmail.com";
         when(usersService.forgotPassword(userName,"siva")).thenReturn(true);
         MvcResult result = mockMvc
@@ -118,7 +118,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void invalidUserFoundTest() throws Exception{
+    void invalidUserFoundTest() throws Exception{
         String userName="siv@gmail.com";
         when(usersService.forgotPassword(userName,"siva")).thenReturn(true);
         MvcResult result = mockMvc
@@ -133,7 +133,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void getAllUsersTest() throws Exception{
+    void getAllUsersTest() throws Exception{
         MvcResult result = mockMvc
                 .perform(get("http://localhost:8080/api/v1.0/tweets/users/all"))
                 .andReturn();
@@ -142,7 +142,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void getByUserNameTest() throws Exception{
+    void getByUserNameTest() throws Exception{
         String userName="praneeth@gmail.com";
         MvcResult result = mockMvc
                 .perform(get("http://localhost:8080/api/v1.0/tweets/user/search/"+userName))
@@ -153,7 +153,7 @@ public class TweetAppApplicationControllerTest {
     }
 
     @Test
-    public void checkInvalidGetByUserNameTest() throws Exception{
+    void checkInvalidGetByUserNameTest() throws Exception{
         String userName="praneet@gmail.com";
         MvcResult result = mockMvc
                 .perform(get("http://localhost:8080/api/v1.0/tweets/user/search/"+userName))

@@ -12,6 +12,9 @@ public interface TweetRepository extends MongoRepository<Tweets, String>{
 
     List<Tweets> findByUsername(String username);
 
+    @Query("{username : ?0}")
+    Tweets findByTweetUsername(String username);
+
     @Query("{username : ?0, tweetId : ?1}")
     Tweets findUserByUsernameAndTweetId(String username, String tweetId);
 

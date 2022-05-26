@@ -3,9 +3,12 @@ package com.tweetapp.tweetapp.services;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.model.GridFSFile;
+import com.tweetapp.tweetapp.model.Comment;
 import com.tweetapp.tweetapp.model.LoadFileVO;
+import com.tweetapp.tweetapp.model.Tweets;
 import com.tweetapp.tweetapp.model.UserModel;
 import com.tweetapp.tweetapp.model.Users;
+import com.tweetapp.tweetapp.repository.TweetRepository;
 import com.tweetapp.tweetapp.repository.UserModelRepository;
 import com.tweetapp.tweetapp.repository.UsersRepository;
 import org.apache.commons.io.IOUtils;
@@ -23,6 +26,7 @@ import java.util.List;
 
 @Service
 public class UsersService {
+    public static final String STORE_AVATAR_PROFILE = "http://localhost:8080/api/v1.0/tweets/avatar/";
     @Autowired
     private GridFsOperations operations;
     @Autowired
@@ -30,6 +34,9 @@ public class UsersService {
 
     @Autowired
     private UsersRepository usersRepository;
+
+    @Autowired
+    private TweetRepository tweetsRepository;
 
     @Autowired
     private UserModelRepository userModelRepository;
@@ -87,10 +94,25 @@ public class UsersService {
         metadata.put("id",id);
         metadata.put("createDate", LocalDateTime.now());
         try {
-            Users employee=  usersRepository.findByLoginId(id);
+            Users user=  usersRepository.findByLoginId(id);
+            List<Tweets> tweets=tweetsRepository.findAll();
             String imageId= template.store(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), metadata).toString();
-            employee.setImageUrl("http://localhost:8080/api/v1.0/tweets/avatar/"+imageId);
-            usersRepository.save(employee);
+            user.setImageUrl(STORE_AVATAR_PROFILE +imageId);
+            for (Tweets i:tweets) {
+                if(i.getUsername().equals(id)){
+                    i.setImageUrl(STORE_AVATAR_PROFILE+imageId);
+                }
+                List<Comment> comments=i.getComments();
+                for (Comment comment:comments) {
+                    if(comment.getUsername().equals(id)){
+                        comment.setImageUrl(STORE_AVATAR_PROFILE+imageId);
+                    }
+
+                }
+                i.setComments(comments);
+                tweetsRepository.save(i);
+            }
+            usersRepository.save(user);
             return imageId;
         }
         catch (IOException ex)
