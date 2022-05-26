@@ -69,6 +69,11 @@ public class TweetController {
 
     }
 
+    @GetMapping( "/byTweetId/{tweetId}")
+    public ResponseEntity<?> getUserTweetsByTweetId(@PathVariable String tweetId ) throws InvalidUsernameException {
+        return new ResponseEntity<>(tweetService.getUserTweetsByTweetId(tweetId), HttpStatus.OK);
+    }
+
     @PutMapping( "/{userName}/update/{tweetId}")
     public ResponseEntity<?> updateTweet(@PathVariable String userName, @PathVariable String tweetId,@RequestBody TweetUpdate tweetUpdate, HttpServletRequest request) {
         Users user=usersService.getByUserName(userName);
