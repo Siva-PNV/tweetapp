@@ -30,6 +30,7 @@ import java.util.List;
 public class TweetController {
 
     public static final String USER_NAME_NOT_FOUND = "User name not found";
+    public static final String GIVEN_TWEET_ID_CANNOT_BE_FOUND = "\"Given tweetId cannot be found\"";
     @Autowired
     private TweetsService tweetService;
 
@@ -110,7 +111,7 @@ public class TweetController {
             tweetService.deleteTweet(userName,tweetId);
             return new ResponseEntity<>("\"Tweet deleted successfully\"", HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
-            return new ResponseEntity<>("\"Given tweetId cannot be found\"",
+            return new ResponseEntity<>(GIVEN_TWEET_ID_CANNOT_BE_FOUND,
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -122,7 +123,7 @@ public class TweetController {
 //        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
-            return new ResponseEntity<>("User name not found",
+            return new ResponseEntity<>(USER_NAME_NOT_FOUND,
                     HttpStatus.NOT_FOUND);
         }
         try {
@@ -134,7 +135,7 @@ public class TweetController {
                 return new ResponseEntity<>("\"Disliked tweet\"", HttpStatus.OK);
             }
         } catch (TweetDoesNotExistException e) {
-            return new ResponseEntity<>("\"Given tweetId cannot be found\"",
+            return new ResponseEntity<>(GIVEN_TWEET_ID_CANNOT_BE_FOUND,
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -147,14 +148,14 @@ public class TweetController {
 //        }
         Users user=usersService.getByUserName(userName);
         if(user==null){
-            return new ResponseEntity<>("User name not found",
+            return new ResponseEntity<>(USER_NAME_NOT_FOUND,
                     HttpStatus.NOT_FOUND);
         }
         try {
             tweetService.replyTweet(userName, tweetId, tweetReply.getComment());
             return new ResponseEntity<>("\"Replied\"", HttpStatus.OK);
         } catch (TweetDoesNotExistException e) {
-            return new ResponseEntity<>("\"Given tweetId cannot be found\"",
+            return new ResponseEntity<>(GIVEN_TWEET_ID_CANNOT_BE_FOUND,
                     HttpStatus.NOT_FOUND);
         }
     }

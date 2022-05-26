@@ -18,7 +18,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @AutoConfigureMockMvc
 @SpringBootTest
-public class TweetAppApplicationControllerTest {
+class TweetAppApplicationControllerTest {
 
     @Mock
     private UsersService usersService;
