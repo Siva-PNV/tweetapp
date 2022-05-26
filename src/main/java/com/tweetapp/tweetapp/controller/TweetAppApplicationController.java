@@ -1,5 +1,6 @@
 package com.tweetapp.tweetapp.controller;
 
+import com.tweetapp.tweetapp.model.ForgotPassword;
 import com.tweetapp.tweetapp.model.LoadFileVO;
 import com.tweetapp.tweetapp.model.LoginCredentials;
 import com.tweetapp.tweetapp.model.Users;
@@ -52,16 +53,16 @@ public class TweetAppApplicationController {
             request.getSession().setAttribute("userName",user.getUsername());
             return new ResponseEntity<>(usersService.getUser(user.getUsername(), user.getPassword()), HttpStatus.OK);
         }
-        return new ResponseEntity<>("Invalid credentials", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("\"Invalid credentials\"", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/{username}/forgot")
-    public ResponseEntity<String> forgotPassword(@PathVariable String username, @RequestBody Users users){
+    public ResponseEntity<String> forgotPassword(@PathVariable String username, @RequestBody ForgotPassword forgotPassword){
 
-        if(usersService.forgotPassword(username,users.getPassword())){
-            return new ResponseEntity<>("password changed",HttpStatus.OK);
+        if(usersService.forgotPassword(username,forgotPassword.getPassword())){
+            return new ResponseEntity<>("\"password changed\"",HttpStatus.OK);
         }
-        return new ResponseEntity<>("user name not found",HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>("\"user name not found\"",HttpStatus.BAD_REQUEST);
     }
 
     @GetMapping("/users/all")
