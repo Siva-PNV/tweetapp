@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 @Service
 public class TweetsService {
 
+    public static final String THIS_TWEET_DOES_NOT_EXIST_ANYMORE = "This tweet does not exist anymore.";
     @Autowired
     private TweetRepository tweetRepository;
 
@@ -73,7 +74,7 @@ public class TweetsService {
             tweet.setTweetText(updatedTweetText);
             return tweetRepository.save(tweet);
         } else {
-            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+            throw new TweetDoesNotExistException(THIS_TWEET_DOES_NOT_EXIST_ANYMORE);
         }
 
     }
@@ -83,7 +84,7 @@ public class TweetsService {
             tweetRepository.deleteById(tweetId);
         }else {
 
-            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+            throw new TweetDoesNotExistException(THIS_TWEET_DOES_NOT_EXIST_ANYMORE);
         }
     }
 
@@ -95,7 +96,7 @@ public class TweetsService {
             tweet.getLikes().add(username);
             tweetRepository.save(tweet);
         } else {
-            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+            throw new TweetDoesNotExistException(THIS_TWEET_DOES_NOT_EXIST_ANYMORE);
         }
     }
 
@@ -106,7 +107,7 @@ public class TweetsService {
             tweet.getLikes().remove(username);
             tweetRepository.save(tweet);
         } else {
-            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+            throw new TweetDoesNotExistException(THIS_TWEET_DOES_NOT_EXIST_ANYMORE);
         }
     }
 
@@ -114,7 +115,7 @@ public class TweetsService {
         Optional<Tweets> tweetOptional = tweetRepository.findById(tweetId);
 
         if(!tweetOptional.isPresent()) {
-            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+            throw new TweetDoesNotExistException(THIS_TWEET_DOES_NOT_EXIST_ANYMORE);
         }
         Tweets tweet = tweetOptional.get();
         return tweet.getLikes().contains(username);
@@ -128,7 +129,7 @@ public class TweetsService {
             tweet.getComments().add(new Comment(username, tweetReply,user.getImageUrl()));
             tweetRepository.save(tweet);
         } else {
-            throw new TweetDoesNotExistException("This tweet does not exist anymore.");
+            throw new TweetDoesNotExistException(THIS_TWEET_DOES_NOT_EXIST_ANYMORE);
         }
     }
 

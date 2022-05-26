@@ -14,16 +14,17 @@ public class CorsFilter implements Filter {
 
     @Override
     public void destroy() {
+        //to destroy
     }
 
     @Override
     public void init(FilterConfig config) throws ServletException {
+        //To do filter configuration
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
             throws IOException, ServletException {
-        // TODO Auto-generated method stub
         final HttpServletResponse response = (HttpServletResponse) res;
 
         response.setHeader("Access-Control-Allow-Origin", "http://localhost:4200");
@@ -32,7 +33,6 @@ public class CorsFilter implements Filter {
         response.setHeader("Access-Control-Max-Age", "3600");
         if ("OPTIONS".equalsIgnoreCase(((HttpServletRequest) req).getMethod())) {
             response.setStatus(HttpServletResponse.SC_OK);
-            return;
         } else {
             // forwarding the request to original destination
             chain.doFilter(req, res);
