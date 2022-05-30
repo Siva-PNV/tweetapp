@@ -73,7 +73,6 @@ public class TweetAppApplicationController {
                     .loadUserByUsername(user.getUsername());
             final String token = jwtTokenUtil.generateToken(userDetails);
             jwtResponse.setJwttoken(token);
-            System.out.println(jwtResponse.getJwttoken());
             return new ResponseEntity<>(usersService.getUser(user.getUsername(), user.getPassword()), HttpStatus.OK);
         }
         return new ResponseEntity<>("\"Invalid credentials\"", HttpStatus.BAD_REQUEST);
