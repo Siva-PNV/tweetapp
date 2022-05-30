@@ -7,3 +7,5 @@ spring:
       database: tweetapp
   application:
     name: tweet-app
+jwt:
+  secret:'tweetapp'
