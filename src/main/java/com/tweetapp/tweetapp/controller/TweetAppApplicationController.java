@@ -118,6 +118,11 @@ public class TweetAppApplicationController {
 
     }
 
+    @GetMapping("/jwt/authentication")
+    public ResponseEntity<?> getToken(){
+        return new ResponseEntity<>(jwtResponse,HttpStatus.OK);
+    }
+
     private void authenticate(String username, String password) throws Exception {
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
