@@ -1,5 +1,6 @@
 package com.tweetapp.tweetapp.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.tweetapp.tweetapp.auth.JwtTokenUtil;
 import com.tweetapp.tweetapp.exception.InvalidUsernameException;
 import com.tweetapp.tweetapp.exception.TweetDoesNotExistException;
@@ -7,6 +8,7 @@ import com.tweetapp.tweetapp.model.Reply;
 import com.tweetapp.tweetapp.model.TweetUpdate;
 import com.tweetapp.tweetapp.model.Tweets;
 import com.tweetapp.tweetapp.model.Users;
+import com.tweetapp.tweetapp.services.Producer;
 import com.tweetapp.tweetapp.services.TweetsService;
 import com.tweetapp.tweetapp.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -42,12 +45,15 @@ public class TweetController {
     @Autowired
     private UsersService usersService;
 
+    @Autowired
+    private Producer kafkaProducer;
+
     UserDetails loginCredentials;
 
     private final JwtTokenUtil jwtTokenUtil=new JwtTokenUtil();
 
     @PostMapping("/{userName}/add")
-    public ResponseEntity<?> postNewTweet(@PathVariable String userName, @RequestBody Tweets tweets, @RequestHeader String Authorization) {
+    public ResponseEntity<?> postNewTweet(@PathVariable String userName, @RequestBody Tweets tweets, @RequestHeader String Authorization) throws ExecutionException, JsonProcessingException, InterruptedException {
         Users user= getUserDetails(userName);
 
         if(user==null){
@@ -55,6 +61,7 @@ public class TweetController {
         }
             if(Authorization!=null && jwtTokenUtil.validateToken(Authorization, loginCredentials)  ){
                 tweetService.postNewTweet(userName, tweets);
+                kafkaProducer.sendMessage(tweets);
                 return new ResponseEntity<>("\"Tweet created\"",HttpStatus.CREATED);
             }
             return new ResponseEntity<>("Unauthorized",HttpStatus.UNAUTHORIZED);
