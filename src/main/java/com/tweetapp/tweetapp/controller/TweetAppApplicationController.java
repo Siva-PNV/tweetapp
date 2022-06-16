@@ -1,9 +1,12 @@
 package com.tweetapp.tweetapp.controller;
 
+import com.tweetapp.tweetapp.auth.JwtResponse;
+import com.tweetapp.tweetapp.auth.JwtTokenUtil;
 import com.tweetapp.tweetapp.model.ForgotPassword;
 import com.tweetapp.tweetapp.model.LoadFileVO;
 import com.tweetapp.tweetapp.model.LoginCredentials;
 import com.tweetapp.tweetapp.model.Users;
+import com.tweetapp.tweetapp.services.JwtUserDetailsService;
 import com.tweetapp.tweetapp.services.UsersService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
@@ -11,6 +14,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -31,7 +38,18 @@ import java.io.IOException;
 public class TweetAppApplicationController {
 
     @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private JwtUserDetailsService userDetailsService;
+
+    @Autowired
     private UsersService usersService;
+
+    JwtResponse jwtResponse=new JwtResponse();
 
     @PostMapping("/register")
     public ResponseEntity<?> registerNewUser(@RequestBody Users users) {
@@ -47,10 +65,14 @@ public class TweetAppApplicationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody LoginCredentials user, HttpServletRequest request) {
+    public ResponseEntity<?> loginUser(@RequestBody LoginCredentials user) throws Exception {
+       // authenticate(user.getUsername(), user.getPassword());
 
         if (usersService.checkUser(user.getUsername(), user.getPassword())) {
-            request.getSession().setAttribute("userName",user.getUsername());
+            final UserDetails userDetails = userDetailsService
+                    .loadUserByUsername(user.getUsername());
+            final String token = jwtTokenUtil.generateToken(userDetails);
+            jwtResponse.setJwttoken(token);
             return new ResponseEntity<>(usersService.getUser(user.getUsername(), user.getPassword()), HttpStatus.OK);
         }
         return new ResponseEntity<>("\"Invalid credentials\"", HttpStatus.BAD_REQUEST);
@@ -95,4 +117,18 @@ public class TweetAppApplicationController {
 
     }
 
+    @GetMapping("/jwt/authentication")
+    public ResponseEntity<?> getToken(){
+        return new ResponseEntity<>(jwtResponse,HttpStatus.OK);
+    }
+
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
+    }
 }
