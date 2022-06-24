@@ -61,7 +61,7 @@ public class TweetController {
         }
             if(Authorization!=null && jwtTokenUtil.validateToken(Authorization, loginCredentials)  ){
                 tweetService.postNewTweet(userName, tweets);
-                kafkaProducer.sendMessage(tweets);
+                //kafkaProducer.sendMessage(tweets);
                 return new ResponseEntity<>("\"Tweet created\"",HttpStatus.CREATED);
             }
             return new ResponseEntity<>("Unauthorized",HttpStatus.UNAUTHORIZED);
