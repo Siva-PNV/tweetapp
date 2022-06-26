@@ -26,7 +26,7 @@ import java.util.List;
 
 @Service
 public class UsersService {
-    public static final String STORE_AVATAR_PROFILE = "http://localhost:8080/api/v1.0/tweets/avatar/";
+    public static final String STORE_AVATAR_PROFILE = "http://tweetapp-env.eba-ih3pr6wj.us-east-1.elasticbeanstalk.com/api/v1.0/tweets/avatar/";
     @Autowired
     private GridFsOperations operations;
     @Autowired
