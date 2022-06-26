@@ -1,12 +1,6 @@
 version: 0.2
 
 phases:
-  install:
-    runtime-versions:
-      java: corretto8
-  pre_build:
-    commands:
-      - echo pre building started
   build:
     commands:
       - echo Installing source NPM dependencies...
