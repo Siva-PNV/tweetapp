@@ -6,6 +6,9 @@ phases:
       java: corretto8
   pre_build:
     commands:
+      - echo pre building
+  build:
+    commands:
       - echo Installing source NPM dependencies...
       - mvn clean install
   post_build:
