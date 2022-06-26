@@ -6,7 +6,7 @@ phases:
       java: corretto8
   pre_build:
     commands:
-      - echo pre building
+      - echo pre building started
   build:
     commands:
       - echo Installing source NPM dependencies...
