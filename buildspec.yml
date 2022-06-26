@@ -7,7 +7,7 @@ phases:
       - mvn install
   post_build:
     commands:
-      -echo completed
+      - echo completed
 artifacts:
   files:
     - target/TweetApp.jar
