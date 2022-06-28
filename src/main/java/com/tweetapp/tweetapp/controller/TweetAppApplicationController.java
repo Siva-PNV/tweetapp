@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
-@CrossOrigin(origins = "http://elasticbeanstalk-us-east-1-587408791356.s3-website-us-east-1.amazonaws.com/")
+@CrossOrigin(origins = "http://elasticbeanstalk-us-east-1-463968088276.s3-website-us-east-1.amazonaws.com")
 @RestController
 @RequestMapping("/api/v1.0/tweets")
 public class TweetAppApplicationController {
